@@ -15,6 +15,16 @@ class Board extends React.Component{
     this.handleClick = this.handleClick.bind(this)
   }
 
+  render() {
+    return (
+      <div>
+        <div>Current player: {(this.state.currentPlayerIsX) ? 'X' : 'O'}</div>
+        <div>{this.state.arrangement.map((row, index) => <Row key={index} values={row} row={index} onclick={this.handleClick} /> )}</div>
+        <div><button onClick={() => {this.resetBoard()}}>Reset board</button></div>
+      </div>
+    );
+  }
+
   handleClick(row, column) {
     var newArrangement = this.getNewArrangement(row, column);
     this.setState({
@@ -23,13 +33,15 @@ class Board extends React.Component{
     })
   }
 
-  render() {
-    return (
-      <div>
-        <div>Current player: {(this.state.currentPlayerIsX) ? 'X' : 'O'}</div>
-        <div>{this.state.arrangement.map((row, index) => <Row key={index} values={row} row={index} onclick={this.handleClick} /> )}</div>
-      </div>
-    );
+  resetBoard() {
+    this.setState({
+      currentPlayerIsX: true,
+      arrangement: [
+        [null, null, null],
+        [null, null, null],
+        [null, null, null]
+      ]
+    })
   }
 
   getNewArrangement(row, column) {
@@ -39,7 +51,9 @@ class Board extends React.Component{
     return newArrangement;
   }
 
-  // function to check if there is a winner
+  checkForWinner() {
+    this.state.arrangement;
+  }
 
 }
 
