@@ -3,13 +3,13 @@
     <title>CSV Report Generator</title>
   </head>
   <body>
-    <form action="/" method="post">
+    <form action="/" method="post" enctype="multipart/form-data">
       <div>
-        <textarea id="data" name="data"></textarea>
-      </div>
-      <div class="button">
-        <button type="submit">Submit</button>
-      </div>
+          <input type="file" name="data" id="data" accept="csv">
+        </div>
+        <div class="button">
+          <button type="submit">Submit</button>
+        </div>
     </form>
     <script>src="./app.js"</script>
   </body>
