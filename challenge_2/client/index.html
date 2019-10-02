@@ -3,14 +3,32 @@
     <title>CSV Report Generator</title>
   </head>
   <body>
-    <form action="/" method="post" enctype="multipart/form-data">
-      <div>
-          <input type="file" name="data" id="data" accept="csv">
-        </div>
-        <div class="button">
-          <button type="submit">Submit</button>
-        </div>
+    <form id="json-submission" enctype="multipart/form-data">
+      <input type="file" class="file" /><br>
+      <input type="submit" />
     </form>
-    <script>src="./app.js"</script>
+    <div id="csv-report"></div>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <!-- <script>src="app.js"</script> -->
+    <script>
+      $('#json-submission').submit(function(e) {
+        e.preventDefault();
+        var form = $('.file')[0];
+        var file = form.files[0];
+        var formData = new FormData();
+        formData.append('file', file);
+        $.ajax({
+          type: 'POST',
+          data: formData,
+          url: '/',
+          cache: false,
+          contentType: false,
+          processData: false,
+          success: (data) => {
+            $('#csv-report').empty().append(data);
+          }
+        })
+      });
+    </script>
   </body>
 </html>

@@ -8,18 +8,21 @@ const upload = multer();
 
 app.use(express.static('client'));
 app.use(morgan('dev'));
-// app.use(express.urlencoded());
-// app.use(express.json());
 
 app.get('/', (req, res) => {
   res.end();
 });
 
-app.post('/', upload.single('data'), function (req, res) {
+var csv;
+app.post('/', upload.single('file'), function (req, res) {
   var fileText = req.file.buffer.toString();
-  var csv = getCsv(JSON.parse(fileText));
-  res.type('text/csv').send(csv);
+  csv = getCsv(JSON.parse(fileText));
+  res.send(csv);
 })
+
+// app.get('/download', function (req, res) {
+//     res.type('text/csv').send(csv);
+// })
 
 app.listen(port, () => { console.log(`listening on port ${port}`) });
 
