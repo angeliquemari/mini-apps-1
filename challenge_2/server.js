@@ -20,9 +20,9 @@ app.post('/', upload.single('file'), function (req, res) {
   res.send(csv);
 })
 
-// app.get('/download', function (req, res) {
-//     res.type('text/csv').send(csv);
-// })
+app.get('/download', function (req, res) {
+  res.attachment().type('text/csv').send(csv);
+})
 
 app.listen(port, () => { console.log(`listening on port ${port}`) });
 

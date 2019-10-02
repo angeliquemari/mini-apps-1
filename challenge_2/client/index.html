@@ -8,6 +8,7 @@
       <input type="submit" />
     </form>
     <div id="csv-report" style="white-space: pre-line"></div>
+    <button id="download" hidden>Download report</button>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <!-- <script>src="app.js"</script> -->
     <script>
@@ -26,9 +27,26 @@
           processData: false,
           success: (data) => {
             $('#csv-report').empty().append(data);
+            $('#download').show();
           }
-        })
+        });
       });
-    </script>
-  </body>
+      </script>
+      <script>
+        $('#download').click(function(e) {
+          e.preventDefault();
+          $.ajax({
+            type: 'GET',
+            url: '/download',
+            success: (data) => {
+              var blob = new Blob([data]);
+              var link = document.createElement('a');
+              link.href = window.URL.createObjectURL(blob);
+              link.download = "convertedJSON.csv";
+              link.click();
+            }
+          });
+        });
+      </script>
+</body>
 </html>
