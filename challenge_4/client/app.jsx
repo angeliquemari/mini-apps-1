@@ -3,9 +3,10 @@ import ReactDOM from 'react-dom';
 const axios = require('axios');
 
 function Row(props) {
+  var colors = {'Y': 'yellow', 'R': 'red', null: 'white'};
   return (
     <tr>
-      {props.row.map((cell, colIndex) => <td key={colIndex} onClick={() => {props.onclick(colIndex)}}>{cell}</td>)}
+      {props.row.map((cell, colIndex) => <td key={colIndex} onClick={() => {props.onclick(colIndex)}} bgcolor={colors[cell]}>O</td>)}
     </tr>
   );
 }
@@ -27,11 +28,6 @@ class Game extends React.Component {
         [null, null, null, null, null, null, null],
         [null, null, null, null, null, null, null]
       ]
-      // grid: [
-      //   ['O', 'X', 'O'],
-      //   ['X', 'O', 'O'],
-      //   ['O', 'O', 'X']
-      // ]
     }
     this.handleClick = this.handleClick.bind(this);
   }
