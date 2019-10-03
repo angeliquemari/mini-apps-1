@@ -18,6 +18,7 @@ class Game extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      currentPlayerIsRed: true,
       grid: [
         [null, null, null, null, null, null, null],
         [null, null, null, null, null, null, null],
@@ -26,6 +27,11 @@ class Game extends React.Component {
         [null, null, null, null, null, null, null],
         [null, null, null, null, null, null, null]
       ]
+      // grid: [
+      //   ['O', 'X', 'O'],
+      //   ['X', 'O', 'O'],
+      //   ['O', 'O', 'X']
+      // ]
     }
     this.handleClick = this.handleClick.bind(this);
   }
@@ -39,9 +45,23 @@ class Game extends React.Component {
     );
   }
   handleClick(colIndex) {
-    alert('colIndex = ' + colIndex);
-
-
+    var rowIndex = -1;
+    // at specified column index, check for null slot starting from bottom row
+    for (let i = this.state.grid.length - 1; i >= 0; i--) {
+      if (this.state.grid[i][colIndex] === null) {
+        rowIndex = i;
+        break;
+      }
+    }
+    // if null slot found, setState to fill slot and switch to next player
+    if (rowIndex > -1) {
+      var newGrid = this.state.grid.slice();
+      newGrid[rowIndex][colIndex] = (this.state.currentPlayerIsRed) ? 'R' : 'Y';
+      this.setState({
+        currentPlayerIsRed: !this.state.currentPlayerIsRed,
+        grid: newGrid
+      });
+    }
   }
 }
 
