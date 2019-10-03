@@ -166,7 +166,7 @@ class Checkout extends React.Component {
       axios.post('/newpayment', {
         purchaseId: this.state.purchaseId,
         userId: this.state.userId,
-        ccNumber: document.getElementById('cc-number').value,
+        creditCardNumber: document.getElementById('cc-number').value,
         expiryDate: document.getElementById('expiry-date').value,
         cvv: document.getElementById('cvv').value,
         billingZip: document.getElementById('billing-zip').value

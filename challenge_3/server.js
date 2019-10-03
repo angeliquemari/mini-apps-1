@@ -64,7 +64,7 @@ const Payment = db.define('payments', {
   expiryDate: {
     type: Sequelize.DATE
   },
-  CVV: {
+  cvv: {
     type: Sequelize.INTEGER
   },
   billingZip: {
@@ -163,7 +163,7 @@ app.post('/newpayment', (req, res) => {
   var paymentId;
   Payment.create({
     userId: req.body.userId,
-    ccNumber: req.body.ccNumber,
+    creditCardNumber: req.body.creditCardNumber,
     expiryDate: req.body.expiryDate,
     cvv: req.body.cvv,
     billingZip: req.body.billingZip
