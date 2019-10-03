@@ -65,7 +65,7 @@ const Payment = db.define('payments', {
     type: Sequelize.DATE
   },
   CVV: {
-    type: Sequelize.STRING
+    type: Sequelize.INTEGER
   },
   billingZip: {
     type: Sequelize.STRING
@@ -135,23 +135,48 @@ app.post('/newuser', (req, res) => {
 
 // create new address record, update purchase record with address ID
 app.post('/newaddress', (req, res) => {
-  var userId;
-  User.create({
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password
+  var addressId;
+  Address.create({
+    userId: req.body.userId,
+    line1: req.body.line1,
+    line2: req.body.line2,
+    city: req.body.city,
+    state: req.body.state,
+    zip: req.body.zip,
+    phone: req.body.phone
   })
-  .then((user) => {
-    console.log('user created, new userid:', user.id);
-    userId = user.id;
-    Purchase.update({userId: user.id}, {where: {id: req.body.purchaseId}});
+  .then((address) => {
+    addressId = address.id;
+    Purchase.update({addressId: address.id}, {where: {id: req.body.purchaseId}});
   })
   .then(() => {
-    console.log('purchase updated, returning userId', userId);
-    res.send({userId: userId});
+    res.send({addressId: addressId});
   })
   .catch((err) => {
-    console.error('error: ', err);
+    console.error('error creating address or updating purchase record: ', err);
+    res.end();
+  });
+});
+
+// create new payment record, update purchase record with payment ID
+app.post('/newpayment', (req, res) => {
+  var paymentId;
+  Payment.create({
+    userId: req.body.userId,
+    ccNumber: req.body.ccNumber,
+    expiryDate: req.body.expiryDate,
+    cvv: req.body.cvv,
+    billingZip: req.body.billingZip
+  })
+  .then((payment) => {
+    paymentId = payment.id;
+    Purchase.update({paymentId: payment.id}, {where: {id: req.body.purchaseId}});
+  })
+  .then(() => {
+    res.send({paymentId: paymentId});
+  })
+  .catch((err) => {
+    console.error('error creating payment or updating purchase record: ', err);
     res.end();
   });
 });

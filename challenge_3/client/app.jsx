@@ -94,7 +94,7 @@ class Checkout extends React.Component {
             </div>
             <div>
               <label>CVV:</label>
-              <input id="cvv" type="text"/>
+              <input id="cvv" type="number"/>
             </div>
             <div>
               <label>Billing zipcode:</label>
@@ -121,7 +121,7 @@ class Checkout extends React.Component {
     if (this.state.checkoutStage === 0) {
       axios.get('/newpurchase')
       .then((res) => {
-        console.log('request to /newpurchse successful, purchaseId:', res.data.purchaseId);
+        console.log('request to /newpurchase successful, purchaseId:', res.data.purchaseId);
         this.updateState(this.state.checkoutStage + 1, res.data.purchaseId);
       })
       .catch((err) => {
@@ -147,50 +147,39 @@ class Checkout extends React.Component {
       axios.post('/newaddress', {
         purchaseId: this.state.purchaseId,
         userId: this.state.userId,
-        name: document.getElementById('name').value,
-        email: document.getElementById('email').value,
-        password: document.getElementById('password').value
+        line1: document.getElementById('line1').value,
+        line2: document.getElementById('line2').value,
+        city: document.getElementById('city').value,
+        state: document.getElementById('state').value,
+        zip: document.getElementById('zip').value,
+        phone: document.getElementById('phone').value
       })
       .then((res) => {
-        console.log('request to /newuser successful, userId: ', res.data.userId);
+        console.log('request to /newaddress successful, addressId: ', res.data.addressId);
         this.updateState(this.state.checkoutStage + 1, this.state.purchaseId, this.state.userId);
       })
       .catch((err) => {
-        console.log('request to /newuser failed:', err);
+        console.log('request to /newaddress failed:', err);
         this.updateState(); // reset
       });
     } else if (this.state.checkoutStage === 3) {
-      this.updateState(); // reset
+      axios.post('/newpayment', {
+        purchaseId: this.state.purchaseId,
+        userId: this.state.userId,
+        ccNumber: document.getElementById('cc-number').value,
+        expiryDate: document.getElementById('expiry-date').value,
+        cvv: document.getElementById('cvv').value,
+        billingZip: document.getElementById('billing-zip').value
+      })
+      .then((res) => {
+        console.log('request to /newpayment successful, paymentId: ', res.data.paymentId);
+        this.updateState(); // reset
+      })
+      .catch((err) => {
+        console.log('request to /newpayment failed:', err);
+        this.updateState(); // reset
+      });
     }
-      // } else if (this.state.checkoutStage === 2) {
-    //   axios.post('/newaddress', {purchaseId: this.state.purchaseId, userId: this.state.userId})
-    //   .then((res) => {
-    //     console.log('request successful');
-    //     this.setState({
-    //       checkoutStage: this.state.checkoutStage + 1
-    //     });
-    //   })
-    //   .catch((err) => {
-    //     console.log('post request to /newaddress failed:', err);
-    //   });
-    // } else if (this.state.checkoutStage === 3) {
-    //   axios.post('/newpayment', {purchaseId: this.state.purchaseId, userId: this.state.userId})
-    //   .then((res) => {
-    //     this.setState({
-    //       checkoutStage: 0,
-    //       purchaseId: null,
-    //       userId: null
-    //     });
-    //   })
-    //   .catch((err) => {
-    //     console.log('post request to /newpayment failed:', err);
-    //   });
-    // }
-    // } else {
-    //   this.setState({
-    //     checkoutStage: this.state.checkoutStage + 1
-    //   });
-    // }
   }
 };
 
