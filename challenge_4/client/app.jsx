@@ -46,35 +46,37 @@ class Game extends React.Component {
   }
 
   handleClick(colIndex) {
-    var rowIndex = -1;
-    // at specified column index, check for null slot starting from bottom row
-    for (let i = this.state.grid.length - 1; i >= 0; i--) {
-      if (this.state.grid[i][colIndex] === null) {
-        rowIndex = i;
-        break;
+    if (this.state.gameStatus === null) {
+      var rowIndex = -1;
+      // at specified column index, check for null slot starting from bottom row
+      for (let i = this.state.grid.length - 1; i >= 0; i--) {
+        if (this.state.grid[i][colIndex] === null) {
+          rowIndex = i;
+          break;
+        }
       }
-    }
-    // if null slot found, make new grid with slot filled, check game status
-    // if game is continuing set state to switch to next player, otherwise to update game status
-    if (rowIndex > -1) {
-      var newGrid = this.state.grid.slice();
-      newGrid[rowIndex][colIndex] = (this.state.currentPlayerIsRed) ? 'R' : 'Y';
-      var newCurrentPlayer = !this.state.currentPlayerIsRed;
-      var newGameStatus = null;
-      if (checkForTie(newGrid)) {
-        newGameStatus = 'tie';
-        newCurrentPlayer = !newCurrentPlayer;
+      // if null slot found, make new grid with slot filled, check game status
+      // if game is continuing set state to switch to next player, otherwise to update game status
+      if (rowIndex > -1) {
+        var newGrid = this.state.grid.slice();
+        newGrid[rowIndex][colIndex] = (this.state.currentPlayerIsRed) ? 'R' : 'Y';
+        var newCurrentPlayer = !this.state.currentPlayerIsRed;
+        var newGameStatus = null;
+        if (checkForTie(newGrid)) {
+          newGameStatus = 'tie';
+          newCurrentPlayer = !newCurrentPlayer;
+        }
+        if (checkForWin(rowIndex, colIndex, newGrid)) {
+          newGameStatus = 'win';
+          newCurrentPlayer = !newCurrentPlayer;
+        }
+        this.setState({
+          gameStatus: newGameStatus,
+          currentPlayerIsRed: newCurrentPlayer,
+          grid: newGrid
+        });
       }
-      // if (checkForWin(newGrid)) {
-      //   gameStatus = 'win';
-      //   newCurrentPlayer = !newCurrentPlayer;
-      // }
-      this.setState({
-        gameStatus: newGameStatus,
-        currentPlayerIsRed: newCurrentPlayer,
-        grid: newGrid
-      });
-    }
+    } 
   }
 }
 
@@ -109,10 +111,35 @@ var checkForTie = function(grid) {
   return isTied;
 }
 
-// var checkForWin = function(grid) {
-//   var isWon = true;
-//   return isWon;
-// }
+var checkForWin = function(rowIndex, colIndex, grid) {
+  return colWin(colIndex, grid); // || rowWin(rowIndex, grid) || minDiagWin(rowIndex, colIndex, grid) || majDiagWin(rowIndex, colIndex, grid);
+};
+
+var colWin = function(colIndex, grid) {
+  var rowIndexWinCombos = [
+    [0, 1, 2, 3],
+    [1, 2, 3, 4],
+    [2, 3, 4, 5]
+  ];
+  var colWin = false;
+  for (let i = 0; i < rowIndexWinCombos.length; i++) {
+    var rowIndexes = rowIndexWinCombos[i];
+    var redFourInAColumn = grid[rowIndexes[0]][colIndex] === 'R' &&
+      grid[rowIndexes[1]][colIndex] === 'R' &&
+      grid[rowIndexes[2]][colIndex] === 'R' &&
+      grid[rowIndexes[3]][colIndex] === 'R';
+    if (redFourInAColumn) colWin = true;
+    var yellowFourInAColumn = grid[rowIndexes[0]][colIndex] === 'Y' &&
+      grid[rowIndexes[1]][colIndex] === 'Y' &&
+      grid[rowIndexes[2]][colIndex] === 'Y' &&
+      grid[rowIndexes[3]][colIndex] === 'Y'
+    if (yellowFourInAColumn) colWin = true;
+  }
+  return colWin;
+};
+// var rowWin = function(rowIndex, grid) {};
+// var minDiagWin = function(grid) {};
+// var majDiagWin = function(grid) {};
 
 // Render game to the DOM
 ReactDOM.render(<Game />, document.getElementById('app'));
