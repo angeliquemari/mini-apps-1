@@ -6,6 +6,7 @@ const Sequelize = require('sequelize');
 
 // set up logging and serving client file
 app.use(express.static('public'));
+app.use(express.json());
 app.use(morgan('dev'));
 
 // set up db connection and tables
@@ -99,18 +100,61 @@ const Purchase = db.define('purchases', {
 db.sync();
 
 // route handling
+// create new purchase record
 app.get('/newpurchase', (req, res) => {
-  console.log('received get request to /newpurchase');
   Purchase.create({userId: null})
   .then((purchase) => {
-    console.log('new purchase id: ', purchase.id);
-    res.end();
+    res.send({purchaseId: purchase.id});
   })
-  .catch(err => {
-    console.error('failed to create purchase', err);
+  .catch((err) => {
+    console.error('error creating purchase record: ', err);
     res.end();
   });
 })
+
+// create new user record, update purchase record with user ID
+app.post('/newuser', (req, res) => {
+  var userId;
+  User.create({
+    name: req.body.name,
+    email: req.body.email,
+    password: req.body.password
+  })
+  .then((user) => {
+    userId = user.id;
+    Purchase.update({userId: user.id}, {where: {id: req.body.purchaseId}});
+  })
+  .then(() => {
+    res.send({userId: userId});
+  })
+  .catch((err) => {
+    console.error('error creating user or updating purchase record: ', err);
+    res.end();
+  });
+});
+
+// create new address record, update purchase record with address ID
+app.post('/newaddress', (req, res) => {
+  var userId;
+  User.create({
+    name: req.body.name,
+    email: req.body.email,
+    password: req.body.password
+  })
+  .then((user) => {
+    console.log('user created, new userid:', user.id);
+    userId = user.id;
+    Purchase.update({userId: user.id}, {where: {id: req.body.purchaseId}});
+  })
+  .then(() => {
+    console.log('purchase updated, returning userId', userId);
+    res.send({userId: userId});
+  })
+  .catch((err) => {
+    console.error('error: ', err);
+    res.end();
+  });
+});
 
 // listen for client requests
 app.listen(port, () => console.log(`Listening on port ${port}`));
