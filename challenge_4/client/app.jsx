@@ -112,7 +112,7 @@ var checkForTie = function(grid) {
 }
 
 var checkForWin = function(rowIndex, colIndex, grid) {
-  return colWin(colIndex, grid); // || rowWin(rowIndex, grid) || minDiagWin(rowIndex, colIndex, grid) || majDiagWin(rowIndex, colIndex, grid);
+  return colWin(colIndex, grid) || rowWin(rowIndex, grid); // || minDiagWin(rowIndex, colIndex, grid) || majDiagWin(rowIndex, colIndex, grid);
 };
 
 var colWin = function(colIndex, grid) {
@@ -137,9 +137,31 @@ var colWin = function(colIndex, grid) {
   }
   return colWin;
 };
-// var rowWin = function(rowIndex, grid) {};
-// var minDiagWin = function(grid) {};
-// var majDiagWin = function(grid) {};
+var rowWin = function(rowIndex, grid) {
+  var colIndexWinCombos = [
+    [0, 1, 2, 3],
+    [1, 2, 3, 4],
+    [2, 3, 4, 5],
+    [3, 4, 5, 6]
+  ];
+  var rowWin = false;
+  for (let i = 0; i < colIndexWinCombos.length; i++) {
+    var colIndexes = colIndexWinCombos[i];
+    var redFourInARow = grid[rowIndex][colIndexes[0]] === 'R' &&
+      grid[rowIndex][colIndexes[1]] === 'R' &&
+      grid[rowIndex][colIndexes[2]] === 'R' &&
+      grid[rowIndex][colIndexes[3]] === 'R';
+    if (redFourInARow) rowWin = true;
+    var yellowFourInARow = grid[rowIndex][colIndexes[0]] === 'Y' &&
+      grid[rowIndex][colIndexes[1]] === 'Y' &&
+      grid[rowIndex][colIndexes[2]] === 'Y' &&
+      grid[rowIndex][colIndexes[3]] === 'Y'
+    if (yellowFourInARow) rowWin = true;
+  }
+  return rowWin;
+};
+// var minDiagWin = function(rowIndex, colIndex, grid) {};
+// var majDiagWin = function(rowIndex, colIndex, grid) {};
 
 // Render game to the DOM
 ReactDOM.render(<Game />, document.getElementById('app'));
