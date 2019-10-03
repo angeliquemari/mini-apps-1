@@ -3,12 +3,16 @@ import ReactDOM from 'react-dom';
 const axios = require('axios');
 
 // Stateful Component
+// render game status and grid to index page
+// keep track of game status, current player, grid configuration
+// bind click handler to pass down to cells in the grid
+// click handler fills empty slot in the grid with a new disc, updates state
 class Game extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       gameStatus: null,
-      currentPlayerIsRed: true,
+      currentPlayerIsRed: true, // red player starts by default
       grid: [
         [null, null, null, null, null, null, null],
         [null, null, null, null, null, null, null],
@@ -50,7 +54,8 @@ class Game extends React.Component {
         break;
       }
     }
-    // if null slot found, setState to fill slot and switch to next player
+    // if null slot found, make new grid with slot filled, check game status
+    // if game is continuing set state to switch to next player, otherwise to update game status
     if (rowIndex > -1) {
       var newGrid = this.state.grid.slice();
       newGrid[rowIndex][colIndex] = (this.state.currentPlayerIsRed) ? 'R' : 'Y';
@@ -74,6 +79,8 @@ class Game extends React.Component {
 }
 
 // Functional Components
+// render each cell of the grid, with a red/yellow color if filled
+// click handler invoked with column index of a cell
 function Grid(props) {
   return props.grid.map((row, rowIndex) => <Row key={rowIndex} row={row} onclick={props.onclick} /> );
 }
@@ -88,6 +95,8 @@ function Row(props) {
 }
 
 // Helper functions
+// check every cell of the grid, starting from the bottom row
+// if any cell is null return false, otherwise return true
 var checkForTie = function(grid) {
   var isTied = true;
   for (let i = grid.length - 1; i >= 0; i--) {
@@ -105,5 +114,5 @@ var checkForTie = function(grid) {
 //   return isWon;
 // }
 
-// Rendering game to the DOM
+// Render game to the DOM
 ReactDOM.render(<Game />, document.getElementById('app'));
