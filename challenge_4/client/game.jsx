@@ -31,6 +31,7 @@ class Game extends React.Component {
     return (
       <div>
         <div>{message}</div>
+        <div>{(this.state.gameStatus === null) ? 'Next player: ' + ((this.state.currentPlayerIsRed) ? 'red' : 'yellow') : null}</div>
         <table border="1">
           <tbody>
           <Grid onclick={this.handleClick} grid={this.state.grid}/>
