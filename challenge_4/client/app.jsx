@@ -168,6 +168,7 @@ var minDiagWin = function(diagReference, grid) {
   var minDiagWin = false;
   var winCombos;
   // winCombos for each diagReference
+  // if more time, would like to generate the winCombos instead of hardcoding them
   if (diagReference === 3) {
     winCombos = [
       [[3,0], [2,1], [1,2], [0,3]]
