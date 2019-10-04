@@ -3,9 +3,7 @@
 var checkForTie = function(grid) {
   var isTied = true;
   for (let i = 0; i < grid[0].length; i++) {
-      if(grid[0][i] === null) {
-        isTied = false;
-      }
+    if (grid[0][i] === null) isTied = false;
   }
   return isTied;
 }
