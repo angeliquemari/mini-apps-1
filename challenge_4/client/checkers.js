@@ -1,18 +1,16 @@
-// check every cell of the grid, starting from the bottom row
-// if any cell is null return false, otherwise return true
+// check every element in top row
+// if any element is null grid is not full, there is no tie
 var checkForTie = function(grid) {
   var isTied = true;
-  for (let i = grid.length - 1; i >= 0; i--) {
-    for (let j = 0; j < grid[i].length; j++) {
-      if(grid[i][j] === null) {
+  for (let i = 0; i < grid[0].length; i++) {
+      if(grid[0][i] === null) {
         isTied = false;
       }
-    }
   }
   return isTied;
 }
 
-// return true if there is a win (4 cells filled by the same player)
+// return true if 4 cells filled by the same player
 // in the column, row, or major/minor diagonal of a newly placed disc
 var checkForWin = function(rowIndex, colIndex, grid) {
   return colWin(colIndex, grid) || rowWin(rowIndex, grid) || minDiagWin(rowIndex + colIndex, grid) || majDiagWin(colIndex - rowIndex, grid);
@@ -40,6 +38,7 @@ var colWin = function(colIndex, grid) {
   }
   return colWin;
 };
+
 var rowWin = function(rowIndex, grid) {
   var colIndexWinCombos = [
     [0, 1, 2, 3],
@@ -63,6 +62,7 @@ var rowWin = function(rowIndex, grid) {
   }
   return rowWin;
 };
+
 var minDiagWin = function(diagReference, grid) {
   // win not possible for diagonals with fewer than 4 cells
   if (diagReference < 3 || diagReference > 8) {
@@ -123,6 +123,7 @@ var minDiagWin = function(diagReference, grid) {
   }
   return minDiagWin;
 };
+
 var majDiagWin = function(diagReference, grid) {
   // win not possible for diagonals with fewer than 4 cells
   if (diagReference < -2 || diagReference > 3) {
