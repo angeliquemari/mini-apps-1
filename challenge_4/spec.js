@@ -1,3 +1,4 @@
+// attempt at tests failed, lost draft of them after a reset to origin
 var assert = require('assert');
 
 describe('Array', function() {
