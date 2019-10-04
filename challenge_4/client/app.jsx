@@ -112,7 +112,7 @@ var checkForTie = function(grid) {
 }
 
 var checkForWin = function(rowIndex, colIndex, grid) {
-  return colWin(colIndex, grid) || rowWin(rowIndex, grid) || minDiagWin(rowIndex + colIndex, grid); // || majDiagWin(rowIndex, colIndex, grid);
+  return colWin(colIndex, grid) || rowWin(rowIndex, grid) || minDiagWin(rowIndex + colIndex, grid) || majDiagWin(colIndex - rowIndex, grid);
 };
 
 var colWin = function(colIndex, grid) {
@@ -161,7 +161,7 @@ var rowWin = function(rowIndex, grid) {
   return rowWin;
 };
 var minDiagWin = function(diagReference, grid) {
-  // win not possible for diagonals with less than 4 cells
+  // win not possible for diagonals with fewer than 4 cells
   if (diagReference < 3 || diagReference > 8) {
     return false;
   }
@@ -220,7 +220,66 @@ var minDiagWin = function(diagReference, grid) {
   }
   return minDiagWin;
 };
-// var majDiagWin = function(rowIndex, colIndex, grid) {};
+var majDiagWin = function(diagReference, grid) {
+  // win not possible for diagonals with fewer than 4 cells
+  if (diagReference < -2 || diagReference > 3) {
+    return false;
+  }
+  var majDiagWin;
+  var winCombos;
+  // winCombos for each diagReference
+  // if more time, would like to generate the winCombos instead of hardcoding them
+  if (diagReference === -2) {
+    winCombos = [
+      [[2,0], [3,1], [4,2], [5,3]]
+    ];
+  }
+  if (diagReference === -1) {
+    winCombos = [
+      [[1,0], [2,1], [3,2], [4,3]],
+      [[2,1], [3,2], [4,3], [5,4]]
+    ];
+  }
+  if (diagReference === 0) {
+    winCombos = [
+      [[0,0], [1,1], [2,2], [3,3]],
+      [[1,1], [2,2], [3,3], [4,4]],
+      [[2,2], [3,3], [4,4], [5,5]]
+    ];
+  }
+  if (diagReference === 1) {
+    winCombos = [
+      [[0,1], [1,2], [2,3], [3,4]],
+      [[1,2], [2,3], [3,4], [4,5]],
+      [[2,3], [3,4], [4,5], [5,6]]
+    ];
+  }
+  if (diagReference === 2) {
+    winCombos = [
+      [[0,2], [1,3], [2,4], [3,5]],
+      [[1,3], [2,4], [3,5], [4,6]]
+    ];
+  }
+  if (diagReference === 3) {
+    winCombos = [
+      [[0,3], [1,4], [2,5], [3,6]]
+    ];
+  }
+  for (let i = 0; i < winCombos.length; i++) {
+    var indexes = winCombos[i];
+    var redFourInAMajDiag = grid[indexes[0][0]][indexes[0][1]] === 'R' &&
+      grid[indexes[1][0]][indexes[1][1]] === 'R' &&
+      grid[indexes[2][0]][indexes[2][1]] === 'R' &&
+      grid[indexes[3][0]][indexes[3][1]] === 'R';
+    if (redFourInAMajDiag) majDiagWin = true;
+    var yellowFourInAMajDiag = grid[indexes[0][0]][indexes[0][1]] === 'Y' &&
+      grid[indexes[1][0]][indexes[1][1]] === 'Y' &&
+      grid[indexes[2][0]][indexes[2][1]] === 'Y' &&
+      grid[indexes[3][0]][indexes[3][1]] === 'Y';
+    if (yellowFourInAMajDiag) majDiagWin = true;
+  }
+  return majDiagWin;
+};
 
 // Render game to the DOM
 ReactDOM.render(<Game />, document.getElementById('app'));
