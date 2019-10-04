@@ -58,12 +58,12 @@ class Game extends React.Component {
         // if game is continuing set state to switch to next player, otherwise to update game status
         var newCurrentPlayer = !this.state.currentPlayerIsRed;
         var newGameStatus = null;
-        if (checkForTie(newGrid)) {
-          newGameStatus = 'tie';
-          newCurrentPlayer = !newCurrentPlayer;
-        }
         if (checkForWin(rowIndex, colIndex, newGrid)) {
           newGameStatus = 'win';
+          newCurrentPlayer = !newCurrentPlayer;
+        }
+        if (!newGameStatus && checkForTie(newGrid)) {
+          newGameStatus = 'tie';
           newCurrentPlayer = !newCurrentPlayer;
         }
         this.setState({
