@@ -112,7 +112,7 @@ var checkForTie = function(grid) {
 }
 
 var checkForWin = function(rowIndex, colIndex, grid) {
-  return colWin(colIndex, grid) || rowWin(rowIndex, grid); // || minDiagWin(rowIndex, colIndex, grid) || majDiagWin(rowIndex, colIndex, grid);
+  return colWin(colIndex, grid) || rowWin(rowIndex, grid) || minDiagWin(rowIndex + colIndex, grid); // || majDiagWin(rowIndex, colIndex, grid);
 };
 
 var colWin = function(colIndex, grid) {
@@ -160,7 +160,65 @@ var rowWin = function(rowIndex, grid) {
   }
   return rowWin;
 };
-// var minDiagWin = function(rowIndex, colIndex, grid) {};
+var minDiagWin = function(diagReference, grid) {
+  // win not possible for diagonals with less than 4 cells
+  if (diagReference < 3 || diagReference > 8) {
+    return false;
+  }
+  var minDiagWin = false;
+  var winCombos;
+  // winCombos for each diagReference
+  if (diagReference === 3) {
+    winCombos = [
+      [[3,0], [2,1], [1,2], [0,3]]
+    ];
+  }
+  if (diagReference === 4) {
+    winCombos = [
+      [[4,0], [3,1], [2,2], [1,3]],
+      [[3,1], [2,2], [1,3], [0,4,]]
+    ];
+  }
+  if (diagReference === 5) {
+    winCombos = [
+      [[5,0], [4,1], [3,2], [2,3]],
+      [[4,1], [3,2], [2,3], [1,4]],
+      [[3,2], [2,3], [1,4], [0,5]]
+    ];
+  }
+  if (diagReference === 6) {
+    winCombos = [
+      [[5,1], [4,2], [3,3], [2,4]],
+      [[4,2], [3,3], [2,4], [1,5]],
+      [[3,3], [2,4], [1,5], [0,6]]
+    ];
+  }
+  if (diagReference === 7) {
+    winCombos = [
+      [[5,2], [4,3], [3,4], [2,5]],
+      [[4,3], [3,4], [2,5], [1,6]]
+    ];
+  }
+  if (diagReference === 8) {
+    winCombos = [
+      [[5,3], [4,4], [3,5], [4,6]]
+    ];
+  }
+  for (let i = 0; i < winCombos.length; i++) {
+    var indexes = winCombos[i];
+    var redFourInAMinDiag = grid[indexes[0][0]][indexes[0][1]] === 'R' &&
+      grid[indexes[1][0]][indexes[1][1]] === 'R' &&
+      grid[indexes[2][0]][indexes[2][1]] === 'R' &&
+      grid[indexes[3][0]][indexes[3][1]] === 'R';
+    if (redFourInAMinDiag) minDiagWin = true;
+    var yellowFourInAMinDiag = grid[indexes[0][0]][indexes[0][1]] === 'Y' &&
+      grid[indexes[1][0]][indexes[1][1]] === 'Y' &&
+      grid[indexes[2][0]][indexes[2][1]] === 'Y' &&
+      grid[indexes[3][0]][indexes[3][1]] === 'Y';
+    if (yellowFourInAMinDiag) minDiagWin = true;
+  }
+  return minDiagWin;
+};
 // var majDiagWin = function(rowIndex, colIndex, grid) {};
 
 // Render game to the DOM
